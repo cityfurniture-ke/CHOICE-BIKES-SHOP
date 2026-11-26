@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0757aa">
   <meta name="description" content="Choice Bikes Shop in Kikopei, Gilgil, Nakuru — bicycles for kids and adults, retail and wholesale, with countrywide delivery.">
+  <link rel="preload" as="image" fetchpriority="high" href="WhatsApp%20Image%202026-11-25%20at%207.33.31%20PM.jpeg">
   <title>Choice Bikes Shop | Bikes for Every Ride</title>
   <style>
     :root {
@@ -30,6 +31,7 @@
     body { margin: 0; color: var(--ink); background: var(--white); line-height: 1.6; }
     a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; box-shadow: 0 0 0 6px var(--navy); }
     .wrap { width: min(1160px, calc(100% - 40px)); margin-inline: auto; }
 
     .notice {
@@ -313,7 +315,7 @@
           </div>
         </div>
         <div class="hero-visual">
-          <img class="hero-photo" src="WhatsApp%20Image%202026-11-25%20at%207.33.31%20PM.jpeg" alt="Blue mountain bike available at Choice Bikes Shop">
+          <img class="hero-photo" src="WhatsApp%20Image%202026-11-25%20at%207.33.31%20PM.jpeg" alt="Blue mountain bike available at Choice Bikes Shop" width="720" height="480" fetchpriority="high" decoding="async">
           <div class="photo-tag"><strong>Ready for your next ride</strong><span>Visit us in Kikopei, Gilgil</span></div>
         </div>
       </div>
@@ -335,7 +337,7 @@
           <p>From a child’s first bike to a mountain bike for bigger adventures. Message or call to check availability.</p>
         </div>
         <nav class="gallery-nav" aria-label="Browse bicycle photo galleries">
-          <a href="#bmx-gallery">Size 29 BMX gallery</a>
+          <a href="#bmx-gallery">BMX gallery</a>
           <a href="#other-bikes-gallery">Other bikes gallery</a>
           <a href="#helmet-gallery">Helmet gallery</a>
         </nav>
@@ -361,8 +363,8 @@
             <div class="product-info"><h3 class="product-size">Size 20 / BMX</h3><p class="product-age">Ages 8–13 years</p><div class="product-bottom"><span class="price">KSh 5,700</span><a class="enquire-link" data-product="Size 20 / BMX bike — KSh 5,700" href="https://wa.me/254787766756">Ask about this <span aria-hidden="true">→</span></a></div></div>
           </article>
           <article class="product-card">
-            <img class="product-image" src="WhatsApp%20Image%202026-11-25%20at%207.33.15%20PM.jpeg" alt="Size 29 BMX bicycle" loading="lazy">
-            <div class="product-info"><h3 class="product-size">Size 29 BMX</h3><p class="product-age">BMX · Large wheel size</p><div class="product-bottom"><span class="price">KSh 13,500</span><a class="enquire-link" data-product="Size 29 BMX bike — KSh 13,500" href="https://wa.me/254787766756">Ask about this <span aria-hidden="true">→</span></a></div></div>
+            <img class="product-image" src="WhatsApp%20Image%202026-11-25%20at%207.33.15%20PM.jpeg" alt="BMX bicycle" loading="lazy">
+            <div class="product-info"><h3 class="product-size">BMX</h3><p class="product-age">BMX · Large wheel size</p><div class="product-bottom"><span class="price">KSh 13,500</span><a class="enquire-link" data-product="BMX bike — KSh 13,500" href="https://wa.me/254787766756">Ask about this <span aria-hidden="true">→</span></a></div></div>
           </article>
           <article class="product-card">
             <img class="product-image" src="WhatsApp%20Image%202026-11-25%20at%207.33.43%20PM%20(1).jpeg" alt="Mountain-style 20-inch bicycle" loading="lazy">
@@ -394,7 +396,7 @@
         <section class="bike-gallery-section" id="bmx-gallery" aria-labelledby="bmx-gallery-title">
           <div class="bike-gallery-heading">
             <span class="eyebrow">BMX collection</span>
-              <h2 id="bmx-gallery-title">Size 29 BMX bikes</h2>
+              <h2 id="bmx-gallery-title">BMX bikes</h2>
               <p>15 BMX bikes · KSh 13,500 each</p>
           </div>
           <div class="bike-gallery" id="bmx-gallery-grid"></div>
@@ -697,18 +699,26 @@
     const menuToggle = document.querySelector(".menu-toggle");
     const navigation = document.querySelector("#site-navigation");
 
+    function setMenuOpen(isOpen) {
+      menuToggle.setAttribute("aria-expanded", String(isOpen));
+      menuToggle.setAttribute("aria-label", isOpen ? "Close navigation menu" : "Open navigation menu");
+      navigation.classList.toggle("is-open", isOpen);
+    }
+
     menuToggle.addEventListener("click", () => {
-      const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
-      menuToggle.setAttribute("aria-expanded", String(!isOpen));
-      menuToggle.setAttribute("aria-label", isOpen ? "Open navigation menu" : "Close navigation menu");
-      navigation.classList.toggle("is-open", !isOpen);
+      setMenuOpen(menuToggle.getAttribute("aria-expanded") !== "true");
     });
 
     navigation.addEventListener("click", (event) => {
       if (event.target.closest("a") && window.matchMedia("(max-width: 680px)").matches) {
-        navigation.classList.remove("is-open");
-        menuToggle.setAttribute("aria-expanded", "false");
-        menuToggle.setAttribute("aria-label", "Open navigation menu");
+        setMenuOpen(false);
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menuToggle.getAttribute("aria-expanded") === "true") {
+        setMenuOpen(false);
+        menuToggle.focus();
       }
     });
 
@@ -820,7 +830,7 @@
         card.className = isPoster ? "gallery-card gallery-poster" : "gallery-card";
 
         const image = document.createElement("img");
-        const itemLabel = itemType === "bmx" ? "Size 29 BMX bicycle" : itemType === "helmet" ? "Bicycle helmet" : "Bicycle";
+        const itemLabel = itemType === "bmx" ? "BMX bicycle" : itemType === "helmet" ? "Bicycle helmet" : "Bicycle";
         image.src = encodeURIComponent(filename);
         image.alt = isPoster
           ? "Choice Bikes Shop original bicycle poster and logo"
@@ -837,7 +847,7 @@
         const enquiry = document.createElement("a");
         enquiry.className = "enquire-link";
         const enquiryText = itemType === "bmx"
-          ? "Size 29 BMX bike — KSh 13,500"
+          ? "BMX bike — KSh 13,500"
           : itemType === "helmet"
             ? "a bicycle helmet — KSh 400"
             : "a bicycle from the photo gallery";
